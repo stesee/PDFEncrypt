@@ -40,6 +40,6 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
       - name: Build
-        run: dotnet build --configuration Release --no-restore
+        run: dotnet build --configuration Release --no-restore -f net6.0-windows10.0.19041.0
       - name: Test
-        run: dotnet test --no-build --verbosity normal --configuration Release
+        run: dotnet test --no-build --verbosity normal --configuration Release -f net6.0-windows10.0.19041.0
