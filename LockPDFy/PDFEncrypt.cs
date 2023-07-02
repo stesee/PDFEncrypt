@@ -1,11 +1,30 @@
 ﻿using iText.Kernel.Exceptions;
 using iText.Kernel.Pdf;
+using System;
 using System.Text;
 
 namespace Codeuctivity
 {
     public class PDFEncrypt
     {
+        public string GeneratePassword()
+        {
+            const int PW_LENGTH_MIN = 12;   // Minimum generated password length
+            const int PW_LENGTH_MAX = 24;   // Maximum generated password length
+            const string PW_CHARS = "abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // List of characters to be used in random passwords
+            var rnd = new Random();
+            int length = rnd.Next(PW_LENGTH_MIN, PW_LENGTH_MAX);
+            string result = "";
+
+            // Pick 'length' characters from the allowed characters.
+            for (int i = 0; i < length; i++)
+            {
+                result += PW_CHARS[rnd.Next(0, PW_CHARS.Length - 1)].ToString();
+            }
+
+            return result;
+        }
+
         public void EncryptPdf(string inputFilePath, string password, string outputFilePath, string ownerPassword, int encryption_properties, int document_options)
         {
             // Create a PdfReader with the input file.

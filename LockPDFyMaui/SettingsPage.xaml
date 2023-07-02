@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="LockPDFyMaui.SettingsPage"
+             Title="Settings">
+
+    <ScrollView Orientation="Both">
+        <VerticalStackLayout>
+
+            <Label Text="Encryption Settings" VerticalOptions="Center" />
+            <Picker x:Name="picker" Title="Select a encryption mode" SelectedIndexChanged="OnPickerSelectedIndexChanged" VerticalOptions="Center"></Picker>
+
+            <HorizontalStackLayout WidthRequest="100" HorizontalOptions="Start">
+                <Label Text="Owner password:" HorizontalOptions="Start"  VerticalOptions="Center" />
+                <Entry x:Name="entryOwnerPassword" TextChanged="OnEntryOwnerPasswordTextChanged" WidthRequest="220" MinimumWidthRequest="50"  VerticalOptions="Center" />
+            </HorizontalStackLayout>
+
+            <HorizontalStackLayout>
+                <HorizontalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
+                </HorizontalStackLayout.GestureRecognizers>
+                <CheckBox x:Name="checkBoxEncryptMetadata" VerticalOptions="Center" CheckedChanged="OnCheckBoxEncryptMetadataCheckedChanged"></CheckBox>
+                <Label Text="ENCRYPT_METADATA" VerticalOptions="Center" />
+            </HorizontalStackLayout>
+
+            <HorizontalStackLayout>
+                <HorizontalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
+                </HorizontalStackLayout.GestureRecognizers>
+                <CheckBox x:Name="checkBoxAllowPrinting" VerticalOptions="Center" CheckedChanged="OnCheckBoxAllowPrintingCheckedChanged"></CheckBox>
+                <Label Text="ALLOW_PRINTING" VerticalOptions="Center" />
+            </HorizontalStackLayout>
+
+            <HorizontalStackLayout>
+                <HorizontalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
+                </HorizontalStackLayout.GestureRecognizers>
+                <CheckBox x:Name="checkBoxAllowDegradedPrinting" VerticalOptions="Center" CheckedChanged="OnCheckBoxCheckedAllowDegradedPrintingChanged"></CheckBox>
+                <Label Text="ALLOW_DEGRADED_PRINTING" VerticalOptions="Center" />
+            </HorizontalStackLayout>
+
+            <HorizontalStackLayout>
+                <HorizontalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
+                </HorizontalStackLayout.GestureRecognizers>
+                <CheckBox x:Name="checkBoxAllowModifyContents" VerticalOptions="Center" CheckedChanged="OnCheckBoxAllowModifysCheckedChanged"></CheckBox>
+                <Label Text="ALLOW_MODIFY_CONTENTS" VerticalOptions="Center" />
+            </HorizontalStackLayout>
+
+            <HorizontalStackLayout>
+                <HorizontalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
+                </HorizontalStackLayout.GestureRecognizers>
+                <CheckBox x:Name="checkBoxAllowModifyingAnnotations" VerticalOptions="Center" CheckedChanged="OnCheckBoxAllowModifyingAnnotationsCheckedChanged"></CheckBox>
+                <Label Text="ALLOW_MODIFY_ANNOTATIONS" VerticalOptions="Center" />
+            </HorizontalStackLayout>
+
+            <HorizontalStackLayout>
+                <HorizontalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
+                </HorizontalStackLayout.GestureRecognizers>
+                <CheckBox x:Name="checkBoxAllowCopy" VerticalOptions="Center" CheckedChanged="OnCheckBoxAllowCopyCheckedChanged"></CheckBox>
+                <Label Text="ALLOW_COPY" VerticalOptions="Center" />
+            </HorizontalStackLayout>
+
+            <HorizontalStackLayout>
+                <HorizontalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
+                </HorizontalStackLayout.GestureRecognizers>
+                <CheckBox x:Name="checkBoxAllowFillIn" VerticalOptions="Center" CheckedChanged="OnCheckBoxAllowFillInCheckedChanged"></CheckBox>
+                <Label Text="ALLOW_FILL_IN" VerticalOptions="Center" />
+            </HorizontalStackLayout>
+
+            <HorizontalStackLayout>
+                <HorizontalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
+                </HorizontalStackLayout.GestureRecognizers>
+                <CheckBox x:Name="checkBoxAllowAssembly" VerticalOptions="Center" CheckedChanged="OnCheckBoxAllowAssemblyCheckedChanged"></CheckBox>
+                <Label Text="ALLOW_ASSEMBLY" VerticalOptions="Center" />
+            </HorizontalStackLayout>
+
+            <HorizontalStackLayout>
+                <HorizontalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
+                </HorizontalStackLayout.GestureRecognizers>
+                <CheckBox x:Name="checkBoxScreenReaders" VerticalOptions="Center" CheckedChanged="OnCheckBoxCheckedChangedScreenReaders"></CheckBox>
+                <Label Text="ALLOW_SCREENREADERS" VerticalOptions="Center" />
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

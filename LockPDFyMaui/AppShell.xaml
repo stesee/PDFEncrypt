@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="LockPDFyMaui.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:LockPDFyMaui">
+    <TabBar>
+        <ShellContent Title="Encrypt"
+                     ContentTemplate="{DataTemplate local:EncryptPage}" />
+        <ShellContent Title="Decrypt"
+                     ContentTemplate="{DataTemplate local:DecryptPage}" />
+        <ShellContent Title="Settings"
+                     ContentTemplate="{DataTemplate local:SettingsPage}" />
+    </TabBar>
+</Shell>
