@@ -42,6 +42,6 @@ jobs:
       - name: Build
         run: dotnet build .\LockPDFyGithubActionsFriendly.slnf --no-restore --configuration Release
       - name: Build maui
-        run: dotnet build .\LockPDFyMaui --no-restore --configuration Release -f net7.0-windows10.0.19041.0
+        run: dotnet build .\LockPDFyMaui --configuration Release -f net7.0-windows10.0.19041.0
       - name: Test
         run: dotnet test  .\LockPDFyGithubActionsFriendly.slnf --no-restore --no-build --verbosity normal --configuration Release
