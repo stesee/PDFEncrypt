@@ -8,7 +8,6 @@ env:
 
 on:
   push:
-    branches: [ main ]
     paths-ignore:
       - '**/*.md'
       - '**/*.gitignore'
@@ -34,15 +33,13 @@ jobs:
           dotnet-version: 7.0.x
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v1.1
-        with:
-          vs-prerelease: true
       - name: Install MAUI Workloads
         run: |
           dotnet workload install android --ignore-failed-sources
           dotnet workload install maui --ignore-failed-sources
       - name: Restore dependencies
-        run: dotnet restore .\LockPDFyGithubActionsFriendly.slnf
+        run: dotnet restore
       - name: Build
-        run: dotnet build .\LockPDFyGithubActionsFriendly.slnf --configuration Release --no-restore
+        run: dotnet build --configuration Release --no-restore
       - name: Test
-        run: dotnet test .\LockPDFyGithubActionsFriendly.slnf --no-build --verbosity normal --configuration Release
+        run: dotnet test --no-build --verbosity normal --configuration Release
