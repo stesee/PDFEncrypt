@@ -56,7 +56,7 @@ jobs:
         shell: pwsh
         id: secret-file
         env:
-          SIGN_CERT: ${{ secrets.ANDROID_SIGN_CERT }}
+          SIGN_CERT: ${{ secrets.SIGN_CERT }}
           SIGN_CERT_STOREPASS: ${{ secrets.ANDROID_SIGN_CERT }}
         if:  env.SIGN_CERT != ''
         run: |
