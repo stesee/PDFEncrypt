@@ -1,10 +1,15 @@
 name: .NET build and test
 env:
   CURRENT_VERSION: 2.4.${{ github.run_number }}
+  APPLICATION_VERSION: ${{ github.run_number }}
   LAST_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+  PACKAGENAME: "com.codeuctivity.LockPDFy"
   DOTNET_NOLOGO: true                     # Disable the .NET logo
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true # Disable the .NET first time experience
   DOTNET_CLI_TELEMETRY_OPTOUT: true       # Disable sending .NET CLI telemetry
+
+# TODO add secrets in github SIGN_CERT, ANDROID_SIGN_CERT_PASSWORD
+
 
 on:
   push:
@@ -41,7 +46,22 @@ jobs:
         run: dotnet restore
       - name: Build
         run: dotnet build .\LockPDFyGithubActionsFriendly.slnf --no-restore --configuration Release
-      - name: Build maui
+      - name: Build maui windows
         run: dotnet build .\LockPDFyMaui --configuration Release -f net7.0-windows10.0.19041.0
       - name: Test
-        run: dotnet test  .\LockPDFyGithubActionsFriendly.slnf --no-restore --no-build --verbosity normal --configuration Release
+        run: dotnet test .\LockPDFyGithubActionsFriendly.slnf --no-restore --no-build --verbosity normal --configuration Release
+      - name: Build maui android
+        run: dotnet publish LockPDFyMaui -f net7.0-android -c Release -p:ApplicationVersion=$APPLICATION_VERSION -p:ApplicationDisplayVersion=$CURRENT_VERSION -p:ApplicationId=$PACKAGENAME
+      - name: Create signing pfx file from secrets
+        shell: pwsh
+        id: secret-file
+        env:
+          SIGN_CERT: ${{ secrets.ANDROID_SIGN_CERT }}
+          SIGN_CERT_STOREPASS: ${{ secrets.ANDROID_SIGN_CERT }}
+        if:  env.SIGN_CERT != ''
+        run: |
+          $secretFile = "AndroidSignCert.pfx"; 
+          $encodedBytes = [System.Convert]::FromBase64String($env:SIGN_CERT); 
+          Set-Content $secretFile -Value $encodedBytes -AsByteStream;
+          Write-Output "::set-output name=SECRET_FILE::$secretFile";
+          jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore $secretFile .\LockPDFyMaui\bin\Release\net7.0-android\publish\$PACKAGENAME.aab AndroidApps -storepass ${{secrets.ANDROID_SIGN_CERT_PASSWORD}}
