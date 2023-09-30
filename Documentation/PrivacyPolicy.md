@@ -1,6 +1,6 @@
-# Information Collected And Transmitted By PDFEncrypt
+# Information Collected And Transmitted By LockPDFy 
 
-First, a reminder: PDFEncrypt is provided "as is", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement.
+First, a reminder: LockPDFy  is provided "as is", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement.
 
 With that out of the way, here's a breakdown of all the information we may collect via Application Insights.
 
@@ -9,7 +9,7 @@ With that out of the way, here's a breakdown of all the information we may colle
 Includes:
 
 * Exception information
-  * Could, in rare cases, contain paths of PDFs on your computer opened or saved by PDFEncrypt
+  * Could, in rare cases, contain paths of PDFs on your computer opened or saved by LockPDFy 
 * Machine name
 * Host name
 * Version number (e.g. 2.0.x.x)
