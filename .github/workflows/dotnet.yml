@@ -63,9 +63,6 @@ jobs:
         if:  env.SIGN_CERT != ''
         run: |
           $secretFile = "AndroidSignCert.pfx"; 
-          $secretFileBase64 = "AndroidSignCert.pfx";
-          certutil.exe -decode $secretFileBase64 $secretFile  
-          Set-Content $secretFileBase64 -Value $env:SIGN_CERT
+          [System.IO.File]::WriteAllBytes($secretFile,[System.Convert]::FromBase64String($env:SIGN_CERT))
           Write-Output "::set-output name=SECRET_FILE::$secretFile";
-          Write-Output "::set-output name=SECRET_FILE::$secretFileBase64";
           jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore $secretFile .\LockPDFyMaui\bin\Release\net7.0-android\publish\$PACKAGENAME.aab AndroidApps -storepass ${{secrets.ANDROID_SIGN_CERT_PASSWORD}}

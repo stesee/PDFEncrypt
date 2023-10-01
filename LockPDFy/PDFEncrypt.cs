@@ -1,6 +1,7 @@
 ﻿using iText.Kernel.Exceptions;
 using iText.Kernel.Pdf;
 using System;
+using System.IO;
 using System.Text;
 
 namespace Codeuctivity
@@ -25,7 +26,7 @@ namespace Codeuctivity
             return result;
         }
 
-        public void EncryptPdf(string inputFilePath, string password, string outputFilePath, string ownerPassword, int encryption_properties, int document_options)
+        public MemoryStream EncryptPdf(string inputFilePath, string password, string ownerPassword, int encryption_properties, int document_options)
         {
             // Create a PdfReader with the input file.
             var reader = new PdfReader(inputFilePath);
@@ -44,18 +45,27 @@ namespace Codeuctivity
             prop.SetStandardEncryption(userPassword, string.IsNullOrEmpty(ownerPassword) ? null : Encoding.ASCII.GetBytes(ownerPassword), document_options, encryption_properties);
 
             // Set up the output file
-            var writer = new PdfWriter(outputFilePath, prop);
+            var memoryStream = new MemoryStream();
+            var writer = new PdfWriter(memoryStream, prop);
+            writer.SetCloseStream(false);
             // Create the new document
             var pdf = new PdfDocument(reader, writer);
             // Close the output document.
             pdf.Close();
+            memoryStream.Seek(0, SeekOrigin.Begin);
+            return memoryStream;
         }
 
-        public bool TryDecryptPdf(string inputFilePath, string userPassword, string outputFilePath)
+        public bool TryDecryptPdf(string inputFilePath, string userPassword, out MemoryStream memoryStream)
         {
+            memoryStream = new MemoryStream();
+
             try
+
             {
-                using var document = new PdfDocument(new PdfReader(inputFilePath, new ReaderProperties().SetPassword(Encoding.UTF8.GetBytes(userPassword))).SetUnethicalReading(true), new PdfWriter(outputFilePath));
+                var pdfReader = new PdfReader(inputFilePath, new ReaderProperties().SetPassword(Encoding.UTF8.GetBytes(userPassword))).SetUnethicalReading(true);
+                pdfReader.SetCloseStream(false);
+                var document = new PdfDocument(pdfReader, new PdfWriter(memoryStream));
             }
             catch (BadPasswordException)
             {

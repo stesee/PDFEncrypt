@@ -188,7 +188,8 @@ namespace PDFEncryptWinforms
                 if (Settings.allow_assembly) { document_options |= EncryptionConstants.ALLOW_ASSEMBLY; }
                 if (Settings.allow_screenreaders) { document_options |= EncryptionConstants.ALLOW_SCREENREADERS; }
 
-                PDFEncrypt.EncryptPdf(txtInputFile.Text, txtPassword.Text, txtOutputFile.Text, owner_password, encryption_properties, document_options);
+                using var stream = PDFEncrypt.EncryptPdf(txtInputFile.Text, txtPassword.Text, owner_password, encryption_properties, document_options);
+                File.WriteAllBytes(txtOutputFile.Text, stream.ToArray());
             }
             catch (Exception ex)
             {
@@ -281,8 +282,16 @@ namespace PDFEncryptWinforms
 
             try
             {
-                if (PDFEncrypt.TryDecryptPdf(textBoxInputFilePathDecrypt.Text, textBoxPasswordDecrypt.Text, textBoxOutputFilePathDecrypt.Text))
+                if (PDFEncrypt.TryDecryptPdf(textBoxInputFilePathDecrypt.Text, textBoxPasswordDecrypt.Text, out var memoryStream))
                 {
+                    try
+                    {
+                        File.WriteAllBytes(textBoxOutputFilePathDecrypt.Text, memoryStream.ToArray());
+                    }
+                    finally
+                    {
+                        memoryStream.Dispose();
+                    }
                     return;
                 }
 

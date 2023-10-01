@@ -91,11 +91,11 @@ public partial class EncryptPage : ContentPage
             if (Settings.allow_assembly) { document_options |= EncryptionConstants.ALLOW_ASSEMBLY; }
             if (Settings.allow_screenreaders) { document_options |= EncryptionConstants.ALLOW_SCREENREADERS; }
 
-            var pdfEncrypt = new Codeuctivity.PDFEncrypt();
-            var destination = await EncryptPageHelpers.PickDestination(new CancellationToken(), source.Text);
+            var pdfEncrypt = new PDFEncrypt();
+            var stream = pdfEncrypt.EncryptPdf(source.Text, entryPassword.Text, Settings.OwnerPassword, encryption_properties, document_options);
+            var destination = await EncryptPageHelpers.PickDestination(new CancellationToken(), source.Text, stream);
 
             if (!destination.IsSuccessful) { return; }
-            pdfEncrypt.EncryptPdf(source.Text, entryPassword.Text, destination.FilePath, Settings.OwnerPassword, encryption_properties, document_options);
         }
         catch (Exception ex)
         {

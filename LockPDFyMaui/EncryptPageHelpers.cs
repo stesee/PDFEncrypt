@@ -1,21 +1,22 @@
 ﻿using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Storage;
-using System.Text;
 
 internal static class EncryptPageHelpers
 {
     public static async Task<FileResult?> PickSource(string PickerTitle)
     {
-        PickOptions pickOptions = new PickOptions();
-        pickOptions.PickerTitle = PickerTitle;
-        pickOptions.FileTypes = new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>>
+        PickOptions pickOptions = new PickOptions
+        {
+            PickerTitle = PickerTitle,
+            FileTypes = new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>>
         {
             { DevicePlatform.Android, new[] { "application/pdf" } },
             { DevicePlatform.iOS, new[] { "com.adobe.pdf" } },
             { DevicePlatform.macOS, new[] { "com.adobe.pdf" } },
             { DevicePlatform.MacCatalyst, new[] { "com.adobe.pdf" } },
             { DevicePlatform.WinUI, new[] { ".pdf" } }
-        });
+        })
+        };
 
         try
         {
@@ -30,10 +31,8 @@ internal static class EncryptPageHelpers
         return null;
     }
 
-    public static async Task<FileSaverResult> PickDestination(CancellationToken cancellationToken, string source, string suffix = "-encrypted")
+    public static async Task<FileSaverResult> PickDestination(CancellationToken cancellationToken, string source, Stream stream, string suffix = "-encrypted")
     {
-        using var stream = new MemoryStream(Encoding.Default.GetBytes(string.Empty));
-
         var proposedFilename = GetFilenameWithSuffix(source, suffix);
 
         var fileSaverResult = await FileSaver.Default.SaveAsync(proposedFilename, stream, cancellationToken);

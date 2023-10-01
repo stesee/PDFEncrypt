@@ -65,16 +65,22 @@ public partial class DecryptPage : ContentPage
         try
         {
             var pdfEncrypt = new Codeuctivity.PDFEncrypt();
-            var destination = await EncryptPageHelpers.PickDestination(new CancellationToken(), source.Text, "-decrypted");
-
-            if (!destination.IsSuccessful) { return; }
-            if (pdfEncrypt.TryDecryptPdf(source.Text, entryPassword.Text, destination.FilePath))
+            if (pdfEncrypt.TryDecryptPdf(source.Text, entryPassword.Text, out var memoryStream))
             {
+                try
+                {
+                    var destination = await EncryptPageHelpers.PickDestination(new CancellationToken(), source.Text, memoryStream, "-decrypted");
+                    if (destination.IsSuccessful)
+                    {
+                        await Toast.Make("File decrypted successfully.").Show();
+                        return;
+                    }
+                }
+                finally { memoryStream.Dispose(); }
                 return;
             }
 
             await Toast.Make("Password is not provided or wrong password provided.").Show();
-            File.Delete(destination.FilePath);
         }
         catch (Exception exception)
         {
