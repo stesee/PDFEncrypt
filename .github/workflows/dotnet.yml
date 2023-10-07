@@ -65,4 +65,4 @@ jobs:
           $secretFile = "AndroidSignCert.pfx"; 
           [System.IO.File]::WriteAllBytes($secretFile,[System.Convert]::FromBase64String($env:SIGN_CERT))
           Write-Output "::set-output name=SECRET_FILE::$secretFile";
-          jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore $secretFile .\LockPDFyMaui\bin\Release\net7.0-android\publish\$PACKAGENAME.aab AndroidApps -storepass ${{secrets.ANDROID_SIGN_CERT_PASSWORD}}
+          # jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore $secretFile .\LockPDFyMaui\bin\Release\net7.0-android\publish\$PACKAGENAME.aab AndroidApps -storepass ${{secrets.ANDROID_SIGN_CERT_PASSWORD}}
