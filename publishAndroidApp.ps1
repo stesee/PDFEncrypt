@@ -1,5 +1,13 @@
 param([String]$AndroidSigningPassword, [int]$ApplicationVersion )
 
+# run as admin to prepare dependencies
+#choco install androidstudio openjdk -y
+# click through update in adnroid studio
+# trigger updates in Android studio
+#dotnet workload install android 
+#dotnet workload install maui 
+# %LOCALAPPDATA%\Android\Sdk
+
 $packageName = "com.codeuctivity.LockPDFy"
 
 # https://learn.microsoft.com/en-us/dotnet/maui/android/deployment/publish-cli#create-a-keystore-file
