@@ -17,7 +17,8 @@ namespace PDFEncryptLibTests
             }
 
             var pdfEncrypt = new PDFEncrypt();
-            pdfEncrypt.EncryptPdf("../../../TestInput/Input.pdf", UserPassword, OutputFilePathEncrypted, null, 0, 0);
+            using var stream = pdfEncrypt.EncryptPdf("../../../TestInput/Input.pdf", UserPassword, null, 0, 0);
+            File.WriteAllBytes(OutputFilePathEncrypted, stream.ToArray());
 
             Assert.True(File.Exists(OutputFilePathEncrypted));
 
@@ -41,7 +42,8 @@ namespace PDFEncryptLibTests
             }
 
             var pdfEncrypt = new PDFEncrypt();
-            pdfEncrypt.EncryptPdf("../../../TestInput/Input.pdf", UserPassword, OutputFilePathEncrypted, OwnerPassword, 1, 1);
+            using var stream = pdfEncrypt.EncryptPdf("../../../TestInput/Input.pdf", UserPassword, OwnerPassword, 1, 1);
+            File.WriteAllBytes(OutputFilePathEncrypted, stream.ToArray());
 
             Assert.True(File.Exists(OutputFilePathEncrypted));
 
@@ -66,11 +68,13 @@ namespace PDFEncryptLibTests
             }
 
             var pdfEncrypt = new PDFEncrypt();
-            pdfEncrypt.TryDecryptPdf($"../../../TestInput/{testInput}", UserPassword, OutputFilePathDecrypted);
+            pdfEncrypt.TryDecryptPdf($"../../../TestInput/{testInput}", UserPassword, out var memoryStream);
+            File.WriteAllBytes(OutputFilePathDecrypted, memoryStream.ToArray());
 
             Assert.True(File.Exists(OutputFilePathDecrypted));
 
-            using var pdfaValidator = new PdfAValidator();
+            using var pdfAValidator = new PdfAValidator();
+            using var pdfaValidator = pdfAValidator;
             var result = await pdfaValidator.ValidateWithDetailedReportAsync(OutputFilePathDecrypted);
 
             var taskResult = result.Jobs.Job.TaskResult;
@@ -87,7 +91,8 @@ namespace PDFEncryptLibTests
             }
 
             var pdfEncrypt = new PDFEncrypt();
-            pdfEncrypt.TryDecryptPdf($"../../../TestInput/EncryptedUsingItextWithOwnerPassword.pdf", OwnerPassword, OutputFilePathDecrypted);
+            pdfEncrypt.TryDecryptPdf($"../../../TestInput/EncryptedUsingItextWithOwnerPassword.pdf", OwnerPassword, out var memoryStream);
+            File.WriteAllBytes(OutputFilePathDecrypted, memoryStream.ToArray());
 
             Assert.True(File.Exists(OutputFilePathDecrypted));
 

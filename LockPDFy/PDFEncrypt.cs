@@ -1,12 +1,32 @@
 ﻿using iText.Kernel.Exceptions;
 using iText.Kernel.Pdf;
+using System;
+using System.IO;
 using System.Text;
 
 namespace Codeuctivity
 {
     public class PDFEncrypt
     {
-        public void EncryptPdf(string inputFilePath, string password, string outputFilePath, string ownerPassword, int encryption_properties, int document_options)
+        public string GeneratePassword()
+        {
+            const int PW_LENGTH_MIN = 12;   // Minimum generated password length
+            const int PW_LENGTH_MAX = 24;   // Maximum generated password length
+            const string PW_CHARS = "abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // List of characters to be used in random passwords
+            var rnd = new Random();
+            int length = rnd.Next(PW_LENGTH_MIN, PW_LENGTH_MAX);
+            string result = "";
+
+            // Pick 'length' characters from the allowed characters.
+            for (int i = 0; i < length; i++)
+            {
+                result += PW_CHARS[rnd.Next(0, PW_CHARS.Length - 1)].ToString();
+            }
+
+            return result;
+        }
+
+        public MemoryStream EncryptPdf(string inputFilePath, string password, string ownerPassword, int encryption_properties, int document_options)
         {
             // Create a PdfReader with the input file.
             var reader = new PdfReader(inputFilePath);
@@ -25,18 +45,27 @@ namespace Codeuctivity
             prop.SetStandardEncryption(userPassword, string.IsNullOrEmpty(ownerPassword) ? null : Encoding.ASCII.GetBytes(ownerPassword), document_options, encryption_properties);
 
             // Set up the output file
-            var writer = new PdfWriter(outputFilePath, prop);
+            var memoryStream = new MemoryStream();
+            var writer = new PdfWriter(memoryStream, prop);
+            writer.SetCloseStream(false);
             // Create the new document
             var pdf = new PdfDocument(reader, writer);
             // Close the output document.
             pdf.Close();
+            memoryStream.Seek(0, SeekOrigin.Begin);
+            return memoryStream;
         }
 
-        public bool TryDecryptPdf(string inputFilePath, string userPassword, string outputFilePath)
+        public bool TryDecryptPdf(string inputFilePath, string userPassword, out MemoryStream memoryStream)
         {
+            memoryStream = new MemoryStream();
+
             try
+
             {
-                using var document = new PdfDocument(new PdfReader(inputFilePath, new ReaderProperties().SetPassword(Encoding.UTF8.GetBytes(userPassword))).SetUnethicalReading(true), new PdfWriter(outputFilePath));
+                var pdfReader = new PdfReader(inputFilePath, new ReaderProperties().SetPassword(Encoding.UTF8.GetBytes(userPassword))).SetUnethicalReading(true);
+                pdfReader.SetCloseStream(false);
+                var document = new PdfDocument(pdfReader, new PdfWriter(memoryStream));
             }
             catch (BadPasswordException)
             {

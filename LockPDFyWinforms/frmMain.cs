@@ -10,15 +10,15 @@ namespace PDFEncryptWinforms
 {
     public partial class frmMain : Form
     {
-        private const int PW_LENGTH_MIN = 12;   // Minimum generated password length
-        private const int PW_LENGTH_MAX = 24;   // Maximum generated password length
-        private const string PW_CHARS = "abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // List of characters to be used in random passwords
-
         private string owner_password = ""; // The owner password, if any.
+
+        public PDFEncrypt PDFEncrypt { get; }
 
         public frmMain()
         {
             InitializeComponent();
+
+            PDFEncrypt = new PDFEncrypt();
         }
 
         private string GetFilenameWithSuffix(string file, string suffix = "-encrypted")
@@ -52,18 +52,8 @@ namespace PDFEncryptWinforms
 
         private void btnPasswordGenerate_Click(object sender, EventArgs e)
         {
-            var rnd = new Random();
-            int length = rnd.Next(PW_LENGTH_MIN, PW_LENGTH_MAX);
-            string result = "";
-
-            // Pick 'length' characters from the allowed characters.
-            for (int i = 0; i < length; i++)
-            {
-                result += PW_CHARS[rnd.Next(0, PW_CHARS.Length - 1)].ToString();
-            }
-
             // Set password
-            txtPassword.Text = result;
+            txtPassword.Text = PDFEncrypt.GeneratePassword();
 
             // Copy to clipboard
             btnCopy_Click(sender, e);
@@ -198,8 +188,8 @@ namespace PDFEncryptWinforms
                 if (Settings.allow_assembly) { document_options |= EncryptionConstants.ALLOW_ASSEMBLY; }
                 if (Settings.allow_screenreaders) { document_options |= EncryptionConstants.ALLOW_SCREENREADERS; }
 
-                var pdfEncrypt = new Codeuctivity.PDFEncrypt();
-                pdfEncrypt.EncryptPdf(txtInputFile.Text, txtPassword.Text, txtOutputFile.Text, owner_password, encryption_properties, document_options);
+                using var stream = PDFEncrypt.EncryptPdf(txtInputFile.Text, txtPassword.Text, owner_password, encryption_properties, document_options);
+                File.WriteAllBytes(txtOutputFile.Text, stream.ToArray());
             }
             catch (Exception ex)
             {
@@ -289,12 +279,19 @@ namespace PDFEncryptWinforms
         private void buttonDecrypt_Click(object sender, EventArgs e)
         {
             labelPasswordWrong.Visible = false;
-            var pdfEncrypt = new PDFEncrypt();
 
             try
             {
-                if (pdfEncrypt.TryDecryptPdf(textBoxInputFilePathDecrypt.Text, textBoxPasswordDecrypt.Text, textBoxOutputFilePathDecrypt.Text))
+                if (PDFEncrypt.TryDecryptPdf(textBoxInputFilePathDecrypt.Text, textBoxPasswordDecrypt.Text, out var memoryStream))
                 {
+                    try
+                    {
+                        File.WriteAllBytes(textBoxOutputFilePathDecrypt.Text, memoryStream.ToArray());
+                    }
+                    finally
+                    {
+                        memoryStream.Dispose();
+                    }
                     return;
                 }
 
