@@ -1,12 +1,10 @@
 param([String]$AndroidSigningPassword, [int]$ApplicationVersion )
 
 # run as admin to prepare dependencies
-#choco install androidstudio openjdk -y
+# choco install androidstudio openjdk -y
 # click through update in adnroid studio
 # trigger updates in Android studio
-#dotnet workload install android 
-#dotnet workload install maui 
-# %LOCALAPPDATA%\Android\Sdk
+# dotnet workload install android maui 
 
 $packageName = "com.codeuctivity.LockPDFy"
 
