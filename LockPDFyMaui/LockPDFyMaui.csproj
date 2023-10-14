@@ -11,7 +11,7 @@
 	<SingleProject>true</SingleProject>
 	<ImplicitUsings>enable</ImplicitUsings>
 	<Nullable>enable</Nullable>
-	  <AndroidSdkDirectory>$(LOCALAPPDATA)\Android\Sdk</AndroidSdkDirectory>
+	<AndroidSdkDirectory>$(LOCALAPPDATA)\Android\Sdk</AndroidSdkDirectory>
 
 	<!-- Display name -->
 	<ApplicationTitle>LockPDFyMaui</ApplicationTitle>

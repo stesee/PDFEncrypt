@@ -66,3 +66,21 @@ jobs:
           [System.IO.File]::WriteAllBytes($secretFile,[System.Convert]::FromBase64String($env:SIGN_CERT))
           Write-Output "::set-output name=SECRET_FILE::$secretFile";
           # jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore $secretFile .\LockPDFyMaui\bin\Release\net7.0-android\publish\$PACKAGENAME.aab AndroidApps -storepass ${{secrets.ANDROID_SIGN_CERT_PASSWORD}}
+      - uses: marvinpinto/action-automatic-releases@v1.2.1
+        if: startsWith(github.ref, 'refs/heads/release')
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: ${{ env.CURRENT_VERSION }}
+          prerelease: false
+          title: "Release Build"
+          files: |
+            .\LockPDFyMaui\bin\Release\net7.0-android\publish\*.aab
+      - uses: marvinpinto/action-automatic-releases@v1.2.1
+        if: not startsWith(github.ref, 'refs/heads/release')
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: ${{ env.CURRENT_VERSION }}
+          prerelease: false
+          title: "Release Build"
+          files: |
+            .\LockPDFyMaui\bin\Release\net7.0-android\publish\*.aab
