@@ -66,11 +66,17 @@ jobs:
           [System.IO.File]::WriteAllBytes($secretFile,[System.Convert]::FromBase64String($env:SIGN_CERT))
           Write-Output "::set-output name=SECRET_FILE::$secretFile";
           # jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore $secretFile .\LockPDFyMaui\bin\Release\net7.0-android\publish\$PACKAGENAME.aab AndroidApps -storepass ${{secrets.ANDROID_SIGN_CERT_PASSWORD}}
-      - uses: marvinpinto/action-automatic-releases@v1.2.1
-        with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: ${{ env.CURRENT_VERSION }}
-          prerelease: true
-          title: "Prerelease Build"
-          files: |
-            .\LockPDFyMaui\bin\Release\net7.0-android\publish\*.aab
+      - name: Github release
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ github.TOKEN }}
+        if: startsWith(github.ref, 'refs/heads/release') AND env.GITHUB_TOKEN != ''
+        run: |
+            gh release create ${{env.CURRENT_VERSION}} .\LockPDFyMaui\bin\Release\net7.0-android\publish\*.aab --generate-notes
+      - name: Github prerelease
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ github.TOKEN }}
+        if: startsWith(github.ref, 'refs/heads/release') == false AND env.GITHUB_TOKEN != ''
+        run: |
+            gh release create ${{env.CURRENT_VERSION}} .\LockPDFyMaui\bin\Release\net7.0-android\publish\*.aab --prerelease --generate-notes
