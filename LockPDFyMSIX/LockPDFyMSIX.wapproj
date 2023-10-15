@@ -1,5 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!--<PropertyGroup>
+	<MyProperty Condition="'$(BuildingInsideVisualStudio)' == 'true'">This build is done by VS</MyProperty>
+	<MyProperty Condition="'$(BuildingInsideVisualStudio)' != 'true'">This build is done from command line of by TFS</MyProperty>
+  </PropertyGroup>-->
+
+  <Target Name="Clean" Condition="'$(BuildingInsideVisualStudio)' != 'true'">
+	<Message Text="This custom target will only be executed when running on dotnet cli" Importance="high"></Message>
+  </Target>
+
+  <Target Name="Build" Condition="'$(BuildingInsideVisualStudio)' != 'true'">
+	<Message Text="This custom target will only be executed when running on dotnet cli" Importance="high"></Message>
+  </Target>
+
+  <Target Name="VSTest" Condition="'$(BuildingInsideVisualStudio)' != 'true'">
+	<Message Text="This custom target will only be executed when running on dotnet cli" Importance="high"></Message>
+  </Target>
+
   <PropertyGroup Condition="'$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '15.0'">
     <VisualStudioVersion>15.0</VisualStudioVersion>
   </PropertyGroup>
@@ -46,13 +63,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup>
-    <WapProjPath Condition="'$(WapProjPath)'==''">$(MSBuildExtensionsPath)\Microsoft\DesktopBridge\</WapProjPath>
+    <WapProjPath Condition="'$(WapProjPath)'=='' AND '$(BuildingInsideVisualStudio)' == 'true'">$(MSBuildExtensionsPath)\Microsoft\DesktopBridge\</WapProjPath>
   </PropertyGroup>
-  <Import Project="$(WapProjPath)\Microsoft.DesktopBridge.props" />
+  <Import Project="$(WapProjPath)\Microsoft.DesktopBridge.props" Condition="'$(BuildingInsideVisualStudio)' == 'true'"/>
   <PropertyGroup>
     <ProjectGuid>d46cd51d-fd5f-41dd-a0ba-541d2bd1196b</ProjectGuid>
     <TargetPlatformVersion>10.0.19041.0</TargetPlatformVersion>
-    <TargetPlatformMinVersion>10.0.14393.0</TargetPlatformMinVersion>
+    <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
     <DefaultLanguage>en-US</DefaultLanguage>
     <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
     <NoWarn>$(NoWarn);NU1702</NoWarn>
@@ -61,7 +78,6 @@
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
     <PackageCertificateKeyFile>LockPDFyMSIX_TemporaryKey.pfx</PackageCertificateKeyFile>
     <EntryPointProjectUniqueName>..\LockPDFyWinforms\LockPDFyWinforms.csproj</EntryPointProjectUniqueName>
-    <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
     <GenerateTestArtifacts>True</GenerateTestArtifacts>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
     <GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
@@ -101,10 +117,7 @@
       <SubType>Designer</SubType>
     </AppxManifest>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="LockPDFyMSIX_TemporaryKey.pfx" />
-  </ItemGroup>
-  <Import Project="$(WapProjPath)\Microsoft.DesktopBridge.targets" />
+  <Import Project="$(WapProjPath)\Microsoft.DesktopBridge.targets" Condition="'$(BuildingInsideVisualStudio)' == 'true'" />
   <ItemGroup>
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.756" PrivateAssets="all" />
   </ItemGroup>

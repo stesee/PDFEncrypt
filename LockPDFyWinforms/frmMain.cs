@@ -1,4 +1,5 @@
-﻿using iText.Kernel.Pdf;
+﻿using Codeuctivity;
+using iText.Kernel.Pdf;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -9,15 +10,15 @@ namespace PDFEncryptWinforms
 {
     public partial class frmMain : Form
     {
-        private const int PW_LENGTH_MIN = 12;   // Minimum generated password length
-        private const int PW_LENGTH_MAX = 24;   // Maximum generated password length
-        private const string PW_CHARS = "abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // List of characters to be used in random passwords
-
         private string owner_password = ""; // The owner password, if any.
+
+        public PDFEncrypt PDFEncrypt { get; }
 
         public frmMain()
         {
             InitializeComponent();
+
+            PDFEncrypt = new PDFEncrypt();
         }
 
         private string GetFilenameWithSuffix(string file, string suffix = "-encrypted")
@@ -45,40 +46,14 @@ namespace PDFEncryptWinforms
 
         private void frmMain_Load(object sender, EventArgs e)
         {
-            // Add listener for updated settings
-            Settings.notify.Add(settingsChanged);
-
             // Load settings from registry
             Settings.load();
         }
 
-        private void settingsChanged()
-        {
-            // This function is executed when settings change.
-            Console.WriteLine("Settings changed notification.");
-        }
-
-        private void btnClose_Click(object sender, EventArgs e)
-        {
-            // Close the app
-            Close();
-        }
-
         private void btnPasswordGenerate_Click(object sender, EventArgs e)
         {
-            // Generate a random password
-            var rnd = new System.Random();  // Random number generator
-            int length = rnd.Next(PW_LENGTH_MIN, PW_LENGTH_MAX);    // Choose password length.
-            string result = "";
-
-            // Pick 'length' characters from the allowed characters.
-            for (int i = 0; i < length; i++)
-            {
-                result += PW_CHARS[rnd.Next(0, PW_CHARS.Length - 1)].ToString();
-            }
-
             // Set password
-            txtPassword.Text = result;
+            txtPassword.Text = PDFEncrypt.GeneratePassword();
 
             // Copy to clipboard
             btnCopy_Click(sender, e);
@@ -213,8 +188,8 @@ namespace PDFEncryptWinforms
                 if (Settings.allow_assembly) { document_options |= EncryptionConstants.ALLOW_ASSEMBLY; }
                 if (Settings.allow_screenreaders) { document_options |= EncryptionConstants.ALLOW_SCREENREADERS; }
 
-                var pdfEncrypt = new Codeuctivity.PDFEncrypt();
-                pdfEncrypt.EncryptPdf(txtInputFile.Text, txtPassword.Text, txtOutputFile.Text, owner_password, encryption_properties, document_options);
+                using var stream = PDFEncrypt.EncryptPdf(txtInputFile.Text, txtPassword.Text, owner_password, encryption_properties, document_options);
+                File.WriteAllBytes(txtOutputFile.Text, stream.ToArray());
             }
             catch (Exception ex)
             {
@@ -286,7 +261,9 @@ namespace PDFEncryptWinforms
                 if (File.Exists(file) && Path.GetExtension(file).Equals(".pdf", StringComparison.OrdinalIgnoreCase))
                 {
                     txtInputFile.Text = file;
+                    textBoxInputFilePathDecrypt.Text = file;
                     txtOutputFile.Text = GetFilenameWithSuffix(file);
+                    textBoxOutputFilePathDecrypt.Text = GetFilenameWithSuffix(file, "-decrypted");
                 }
             }
         }
@@ -297,6 +274,51 @@ namespace PDFEncryptWinforms
                 e.Effect = DragDropEffects.Link;
             else
                 e.Effect = DragDropEffects.None;
+        }
+
+        private void buttonDecrypt_Click(object sender, EventArgs e)
+        {
+            labelPasswordWrong.Visible = false;
+
+            try
+            {
+                if (PDFEncrypt.TryDecryptPdf(textBoxInputFilePathDecrypt.Text, textBoxPasswordDecrypt.Text, out var memoryStream))
+                {
+                    try
+                    {
+                        File.WriteAllBytes(textBoxOutputFilePathDecrypt.Text, memoryStream.ToArray());
+                    }
+                    finally
+                    {
+                        memoryStream.Dispose();
+                    }
+                    return;
+                }
+
+                labelPasswordWrong.Visible = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred while processing the file: " + ex.Message);
+                Cursor.Current = Cursors.Default;
+                return;
+            }
+        }
+
+        private void buttonInputBrowse_Click(object sender, EventArgs e)
+        {
+            DialogResult result = dlgSave.ShowDialog();
+            if (result == DialogResult.Cancel) { return; }
+
+            textBoxInputFilePathDecrypt.Text = dlgSave.FileName;
+        }
+
+        private void buttonOutputBrowse_Click(object sender, EventArgs e)
+        {
+            DialogResult result = dlgSave.ShowDialog();
+            if (result == DialogResult.Cancel) { return; }
+
+            textBoxOutputFilePathDecrypt.Text = dlgSave.FileName;
         }
     }
 }

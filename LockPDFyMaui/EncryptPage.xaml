@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="LockPDFyMaui.EncryptPage"
+             Title="Encrypt">
+    <VerticalStackLayout>
+        <!--https://learn.microsoft.com/en-us/dotnet/maui/user-interface/controls/button-->
+
+        <Label Text="Source PDF:" />
+        <Entry x:Name="source" Placeholder="Choose a source PDF" Text="" />
+        <Button x:Name="OnButtonPickSource" Text="..." Clicked="OnButtonPickSourceClicked" />
+
+        <Label Text="Specify a password (required to open the file):" />
+        <Entry x:Name="entryPassword" Placeholder="Type password here" Text="" />
+        <Button x:Name="ButtonGenerate" Text="Generate password" Clicked="OnButtonGenerateClicked" />
+        <Button x:Name="ButtonCopy" Text="Copy password" Clicked="OnButtonCopyClicked" />
+
+        <Button x:Name="ButtonEncrypt" Text="Encrypt ..." Clicked="OnButtonEncryptClicked" />
+    </VerticalStackLayout>
+</ContentPage>
