@@ -62,21 +62,18 @@ public partial class DecryptPage : ContentPage
             return;
         }
 
+        var memoryStream = new MemoryStream();
         try
         {
             var pdfEncrypt = new Codeuctivity.PDFEncrypt();
-            if (pdfEncrypt.TryDecryptPdf(source.Text, entryPassword.Text, out var memoryStream))
+            if (pdfEncrypt.TryDecryptPdf(source.Text, entryPassword.Text, ref memoryStream))
             {
-                try
+                var destination = await EncryptPageHelpers.PickDestination(new CancellationToken(), source.Text, memoryStream, "-decrypted");
+                if (destination.IsSuccessful)
                 {
-                    var destination = await EncryptPageHelpers.PickDestination(new CancellationToken(), source.Text, memoryStream, "-decrypted");
-                    if (destination.IsSuccessful)
-                    {
-                        await Toast.Make("File decrypted successfully.").Show();
-                        return;
-                    }
+                    await Toast.Make("File decrypted successfully.").Show();
+                    return;
                 }
-                finally { memoryStream.Dispose(); }
                 return;
             }
 
@@ -86,6 +83,10 @@ public partial class DecryptPage : ContentPage
         {
             await Toast.Make("An error occurred while processing the file: " + exception.Message).Show();
             return;
+        }
+        finally
+        {
+            memoryStream.Dispose();
         }
     }
 }

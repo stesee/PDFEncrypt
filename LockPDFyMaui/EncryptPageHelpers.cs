@@ -34,7 +34,7 @@ internal static class EncryptPageHelpers
     public static async Task<FileSaverResult> PickDestination(CancellationToken cancellationToken, string source, Stream stream, string suffix = "-encrypted")
     {
         var proposedFilename = GetFilenameWithSuffix(source, suffix);
-
+        stream.Position = 0;
         var fileSaverResult = await FileSaver.Default.SaveAsync(proposedFilename, stream, cancellationToken);
         if (fileSaverResult.IsSuccessful)
         {

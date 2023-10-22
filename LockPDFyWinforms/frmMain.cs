@@ -225,7 +225,8 @@ namespace PDFEncryptWinforms
                 Close();
             }
 
-            Cursor.Current = Cursors.Default;   // Return to default cursor.
+            // Return to default cursor.
+            Cursor.Current = Cursors.Default;
         }
 
         private void btnSettings_Click(object sender, EventArgs e)
@@ -279,21 +280,17 @@ namespace PDFEncryptWinforms
         private void buttonDecrypt_Click(object sender, EventArgs e)
         {
             labelPasswordWrong.Visible = false;
+            var memoryStream = new MemoryStream();
 
             try
             {
-                if (PDFEncrypt.TryDecryptPdf(textBoxInputFilePathDecrypt.Text, textBoxPasswordDecrypt.Text, out var memoryStream))
-                {
-                    try
+                if (PDFEncrypt.TryDecryptPdf(textBoxInputFilePathDecrypt.Text, textBoxPasswordDecrypt.Text, ref memoryStream))
+                    using (memoryStream)
                     {
-                        File.WriteAllBytes(textBoxOutputFilePathDecrypt.Text, memoryStream.ToArray());
+                        using (FileStream file = new FileStream(textBoxOutputFilePathDecrypt.Text, FileMode.Create, FileAccess.Write))
+                            memoryStream.CopyTo(file);
+                        return;
                     }
-                    finally
-                    {
-                        memoryStream.Dispose();
-                    }
-                    return;
-                }
 
                 labelPasswordWrong.Visible = true;
             }
@@ -302,6 +299,10 @@ namespace PDFEncryptWinforms
                 MessageBox.Show("An error occurred while processing the file: " + ex.Message);
                 Cursor.Current = Cursors.Default;
                 return;
+            }
+            finally
+            {
+                memoryStream.Dispose();
             }
         }
 

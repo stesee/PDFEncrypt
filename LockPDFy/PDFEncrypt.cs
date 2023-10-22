@@ -56,21 +56,24 @@ namespace Codeuctivity
             return memoryStream;
         }
 
-        public bool TryDecryptPdf(string inputFilePath, string userPassword, out MemoryStream memoryStream)
+        public bool TryDecryptPdf(string inputFilePath, string userPassword, ref MemoryStream memoryStream)
         {
-            memoryStream = new MemoryStream();
-
+            var writer = new PdfWriter(memoryStream);
             try
-
             {
-                var pdfReader = new PdfReader(inputFilePath, new ReaderProperties().SetPassword(Encoding.UTF8.GetBytes(userPassword))).SetUnethicalReading(true);
-                pdfReader.SetCloseStream(false);
-                var document = new PdfDocument(pdfReader, new PdfWriter(memoryStream));
+                var reader = new PdfReader(inputFilePath, new ReaderProperties().SetPassword(Encoding.UTF8.GetBytes(userPassword))).SetUnethicalReading(true);
+                writer.SetCloseStream(false);
+
+                using var document = new PdfDocument(reader, writer);
+                document.Close();
             }
             catch (BadPasswordException)
             {
+                writer.Dispose();
                 return false;
             }
+
+            memoryStream.Position = 0;
             return true;
         }
     }
