@@ -8,7 +8,7 @@ namespace PDFEncryptLibTests
         private const string OwnerPassword = "OwnerPasword123";
 
         [Fact]
-        public async void ShouldEncrypt()
+        public async void ShouldEncryptWithUserPassword()
         {
             string OutputFilePathEncrypted = "Encrypted.pdf";
             if (File.Exists(OutputFilePathEncrypted))
@@ -68,17 +68,13 @@ namespace PDFEncryptLibTests
             }
 
             var pdfEncrypt = new PDFEncrypt();
-            pdfEncrypt.TryDecryptPdf($"../../../TestInput/{testInput}", UserPassword, out var memoryStream);
+            var memoryStream = new MemoryStream();
+            var decryptionSuccess = pdfEncrypt.TryDecryptPdf($"../../../TestInput/{testInput}", UserPassword, ref memoryStream);
+
             File.WriteAllBytes(OutputFilePathDecrypted, memoryStream.ToArray());
 
-            Assert.True(File.Exists(OutputFilePathDecrypted));
-
-            using var pdfAValidator = new PdfAValidator();
-            using var pdfaValidator = pdfAValidator;
-            var result = await pdfaValidator.ValidateWithDetailedReportAsync(OutputFilePathDecrypted);
-
-            var taskResult = result.Jobs.Job.TaskResult;
-            Assert.DoesNotContain("appears to be encrypted", taskResult.ExceptionMessage);
+            Assert.True(decryptionSuccess);
+            await AssertFileIsAnUnencryptedPdf(OutputFilePathDecrypted);
         }
 
         [Fact]
@@ -91,16 +87,26 @@ namespace PDFEncryptLibTests
             }
 
             var pdfEncrypt = new PDFEncrypt();
-            pdfEncrypt.TryDecryptPdf($"../../../TestInput/EncryptedUsingItextWithOwnerPassword.pdf", OwnerPassword, out var memoryStream);
-            File.WriteAllBytes(OutputFilePathDecrypted, memoryStream.ToArray());
+            var memoryStream = new MemoryStream();
+            var decryptionSuccess = pdfEncrypt.TryDecryptPdf($"../../../TestInput/EncryptedUsingItextWithOwnerPassword.pdf", OwnerPassword, ref memoryStream);
+            using (memoryStream)
+                File.WriteAllBytes(OutputFilePathDecrypted, memoryStream.ToArray());
 
+            Assert.True(decryptionSuccess);
+            await AssertFileIsAnUnencryptedPdf(OutputFilePathDecrypted);
+        }
+
+        private static async Task AssertFileIsAnUnencryptedPdf(string OutputFilePathDecrypted)
+        {
             Assert.True(File.Exists(OutputFilePathDecrypted));
-
-            using var pdfaValidator = new PdfAValidator();
-            var result = await pdfaValidator.ValidateWithDetailedReportAsync(OutputFilePathDecrypted);
+            var info = new FileInfo(OutputFilePathDecrypted);
+            Assert.True(info.Length > 50);
+            var pdfAValidator = new PdfAValidator();
+            var result = await pdfAValidator.ValidateWithDetailedReportAsync(OutputFilePathDecrypted);
 
             var taskResult = result.Jobs.Job.TaskResult;
             Assert.DoesNotContain("appears to be encrypted", taskResult.ExceptionMessage);
+            Assert.DoesNotContain("Couldn't parse stream caused", taskResult.ExceptionMessage);
         }
     }
 }
