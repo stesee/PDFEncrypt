@@ -2,7 +2,7 @@
 
 [![Windows Store](https://img.shields.io/badge/Windows%20Store-LockPDFy-green?style=flat&logo=windows&link=https://www.microsoft.com/store/productId/9NC5KPZM2ZRM)](https://www.microsoft.com/store/productId/9NC5KPZM2ZRM) [![Google Play Store](https://img.shields.io/badge/Google%20Play%20Store-LockPDFy-green?style=flat&logo=android&link=https://play.google.com/store/apps/details?id=com.codeuctivity.LockPDFy)](https://play.google.com/store/apps/details?id=com.codeuctivity.LockPDFy)
 
-LockPDFy is a user-friendly, open-source and trade mark claim free .net tool for Windows that swiftly encrypts and decrypts PDF files at no cost. Encrypted PDF files are protected with a password and prevent unauthorized access to sensitive information. Commont PDF Viewers are capable to open PDF that are encrypted by this program. The tool is available for Windows and Android.
+LockPDFy is a user-friendly, open-source and trade mark claim free tool that swiftly encrypts and decrypts PDF files at no cost. Encrypted PDF files are protected with a password and prevent unauthorized access to sensitive information. Commont PDF Viewers are capable to open PDF that are encrypted by this program. The tool is available for Windows and Android.
 
 ## Features
 
