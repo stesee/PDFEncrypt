@@ -36,7 +36,7 @@ dotnet clean
 dotnet restore
 dotnet build -c Release
 dotnet test -c Release --no-build
-dotnet publish LockPDFyMaui -f net7.0-android -c Release -p:ApplicationVersion=$ApplicationVersion -p:ApplicationDisplayVersion=$ApplicationVersion.0 -p:ApplicationId=$packageName
-jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore ../GooglePlayStore.keystore .\LockPDFyMaui\bin\Release\net7.0-android\publish\$packageName.aab AndroidApps -storepass $AndroidSigningPassword
-rm .\LockPDFyMaui\bin\Release\net7.0-android\publish\*signed.a*
-explorer .\LockPDFyMaui\bin\Release\net7.0-android\publish\
+dotnet publish LockPDFyMaui -f net8.0-android -c Release -p:ApplicationVersion=$ApplicationVersion -p:ApplicationDisplayVersion=$ApplicationVersion.0 -p:ApplicationId=$packageName
+jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore ../GooglePlayStore.keystore .\LockPDFyMaui\bin\Release\net8.0-android\publish\$packageName.aab AndroidApps -storepass $AndroidSigningPassword
+rm .\LockPDFyMaui\bin\Release\net8.0-android\publish\*signed.a*
+explorer .\LockPDFyMaui\bin\Release\net8.0-android\publish\
