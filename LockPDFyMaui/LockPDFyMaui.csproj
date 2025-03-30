@@ -3,7 +3,8 @@
 	<PropertyGroup>
 		<TargetFrameworks>net8.0-android;net8.0-ios;net8.0-maccatalyst</TargetFrameworks>
 		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">
-			$(TargetFrameworks);net8.0-windows10.0.19041.0</TargetFrameworks>
+			$(TargetFrameworks);net8.0-windows10.0.19041.0
+		</TargetFrameworks>
 		<!-- Uncomment to also build the tizen app. You will need to install tizen by following
 		this: https://github.com/Samsung/Tizen.NET -->
 		<!-- <TargetFrameworks>$(TargetFrameworks);net8.0-tizen</TargetFrameworks> -->
@@ -32,28 +33,35 @@
 		<ApplicationIdGuid>1b2a444d-10cc-4c98-9be6-445700d74910</ApplicationIdGuid>
 
 		<!-- Versions -->
+		<Version Condition=" '$(Version)' == '' ">1.0.1</Version>
 		<ApplicationDisplayVersion>$(Version)</ApplicationDisplayVersion>
 		<MajorVersion>$(Version.Split('.')[0])</MajorVersion>
 		<ApplicationVersion>$(MajorVersion)</ApplicationVersion>
 
 		<SupportedOSPlatformVersion
 			Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
-			11.0</SupportedOSPlatformVersion>
+			11.0
+		</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion
 			Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
-			13.1</SupportedOSPlatformVersion>
+			13.1
+		</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion
 			Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
-			21.0</SupportedOSPlatformVersion>
+			21.0
+		</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion
 			Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
-			10.0.17763.0</SupportedOSPlatformVersion>
+			10.0.17763.0
+		</SupportedOSPlatformVersion>
 		<TargetPlatformMinVersion
 			Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
-			10.0.17763.0</TargetPlatformMinVersion>
+			10.0.17763.0
+		</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion
 			Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">
-			6.5</SupportedOSPlatformVersion>
+			6.5
+		</SupportedOSPlatformVersion>
 		<PackageLicenseExpression>AGPL</PackageLicenseExpression>
 		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
 		<DefaultLanguage>en-US</DefaultLanguage>
@@ -160,7 +168,7 @@
 		</MauiXaml>
 	</ItemGroup>
 
-		<PropertyGroup Condition="'$(OS)' == 'Windows_NT' AND '$(AndroidSdkDirectory)' == ''">
+	<PropertyGroup Condition="'$(OS)' == 'Windows_NT' AND '$(AndroidSdkDirectory)' == ''">
 		<!--That PropertyGroup fixes the error below:
 		Xamarin.Android.Tooling.targets(70,5): error XA5300:
 		The Android SDK directory could not be found. Install the Android SDK by following the instructions at: https://aka.ms/dotnet-android-install-sdk To use a custom SDK path for a command line build, set the 'AndroidSdkDirectory' MSBuild property to the custom path.-->
