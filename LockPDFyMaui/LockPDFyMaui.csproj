@@ -1,138 +1,179 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-	<TargetFrameworks>net8.0-android;net8.0-ios;net8.0-maccatalyst</TargetFrameworks>
-	<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net8.0-windows10.0.19041.0</TargetFrameworks>
-	<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
-	<!-- <TargetFrameworks>$(TargetFrameworks);net8.0-tizen</TargetFrameworks> -->
+	<PropertyGroup>
+		<TargetFrameworks>net8.0-android;net8.0-ios;net8.0-maccatalyst</TargetFrameworks>
+		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">
+			$(TargetFrameworks);net8.0-windows10.0.19041.0
+		</TargetFrameworks>
+		<!-- Uncomment to also build the tizen app. You will need to install tizen by following
+		this: https://github.com/Samsung/Tizen.NET -->
+		<!-- <TargetFrameworks>$(TargetFrameworks);net8.0-tizen</TargetFrameworks> -->
 
-	<!-- Note for MacCatalyst:
-		The default runtime is maccatalyst-x64, except in Release config, in which case the default is maccatalyst-x64;maccatalyst-arm64.
-		When specifying both architectures, use the plural <RuntimeIdentifiers> instead of the singular <RuntimeIdentifier>.
+		<!-- Note for MacCatalyst:
+		The default runtime is maccatalyst-x64, except in Release config, in which case the default is
+		maccatalyst-x64;maccatalyst-arm64.
+		When specifying both architectures, use the plural <RuntimeIdentifiers> instead of the singular
+		<RuntimeIdentifier>.
 		The Mac App Store will NOT accept apps with ONLY maccatalyst-arm64 indicated;
 		either BOTH runtimes must be indicated or ONLY macatalyst-x64. -->
-	<!-- For example: <RuntimeIdentifiers>maccatalyst-x64;maccatalyst-arm64</RuntimeIdentifiers> -->
-	
-	<OutputType>Exe</OutputType>
-	<RootNamespace>LockPDFyMaui</RootNamespace>
-	<UseMaui>true</UseMaui>
-	<SingleProject>true</SingleProject>
-	<ImplicitUsings>enable</ImplicitUsings>
-	<Nullable>enable</Nullable>
-	<AndroidSdkDirectory>$(LOCALAPPDATA)\Android\Sdk</AndroidSdkDirectory>
+		<!-- For example: <RuntimeIdentifiers>maccatalyst-x64;maccatalyst-arm64</RuntimeIdentifiers> -->
 
-	<!-- Display name -->
-	<ApplicationTitle>LockPDFyMaui</ApplicationTitle>
+		<OutputType>Exe</OutputType>
+		<RootNamespace>LockPDFyMaui</RootNamespace>
+		<UseMaui>true</UseMaui>
+		<SingleProject>true</SingleProject>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
 
-	<!-- App Identifier -->
-	<ApplicationId>com.companyname.lockpdfymaui</ApplicationId>
-	<ApplicationIdGuid>1b2a444d-10cc-4c98-9be6-445700d74910</ApplicationIdGuid>
+		<!-- Display name -->
+		<ApplicationTitle>LockPDFyMaui</ApplicationTitle>
 
-	<!-- Versions -->
-	<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
-	<ApplicationVersion>1</ApplicationVersion>
+		<!-- App Identifier -->
+		<ApplicationId>com.companyname.lockpdfymaui</ApplicationId>
+		<ApplicationIdGuid>1b2a444d-10cc-4c98-9be6-445700d74910</ApplicationIdGuid>
 
-	<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">11.0</SupportedOSPlatformVersion>
-	<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">13.1</SupportedOSPlatformVersion>
-	<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
-	<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
-	<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
-	<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
-	<PackageLicenseExpression>AGPL</PackageLicenseExpression>
-	<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-	<DefaultLanguage>en-US</DefaultLanguage>
-  </PropertyGroup>
+		<!-- Versions -->
+		<Version Condition=" '$(Version)' == '' ">1.0.1</Version>
+		<ApplicationDisplayVersion>$(Version)</ApplicationDisplayVersion>
+		<MajorVersion>$(Version.Split('.')[0])</MajorVersion>
+		<ApplicationVersion>$(MajorVersion)</ApplicationVersion>
 
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-android|AnyCPU'">
-	<ApplicationTitle>LockPDFy</ApplicationTitle>
-  </PropertyGroup>
+		<SupportedOSPlatformVersion
+			Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
+			11.0
+		</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion
+			Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
+			13.1
+		</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion
+			Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+			21.0
+		</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion
+			Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
+			10.0.17763.0
+		</SupportedOSPlatformVersion>
+		<TargetPlatformMinVersion
+			Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
+			10.0.17763.0
+		</TargetPlatformMinVersion>
+		<SupportedOSPlatformVersion
+			Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">
+			6.5
+		</SupportedOSPlatformVersion>
+		<PackageLicenseExpression>AGPL</PackageLicenseExpression>
+		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+		<DefaultLanguage>en-US</DefaultLanguage>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-ios|AnyCPU'">
-	<ApplicationTitle>LockPDFy</ApplicationTitle>
-  </PropertyGroup>
+	<PropertyGroup
+		Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-android|AnyCPU'">
+		<ApplicationTitle>LockPDFy</ApplicationTitle>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-maccatalyst|AnyCPU'">
-	<ApplicationTitle>LockPDFy - swiftly encrypts and decrypts PDF files</ApplicationTitle>
-  </PropertyGroup>
+	<PropertyGroup
+		Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-ios|AnyCPU'">
+		<ApplicationTitle>LockPDFy</ApplicationTitle>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-windows10.0.19041.0|AnyCPU'">
-	<ApplicationTitle>LockPDFy - swiftly encrypts and decrypts PDF files</ApplicationTitle>
-  </PropertyGroup>
+	<PropertyGroup
+		Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-maccatalyst|AnyCPU'">
+		<ApplicationTitle>LockPDFy - swiftly encrypts and decrypts PDF files</ApplicationTitle>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android|AnyCPU'">
-	<ApplicationTitle>LockPDFy</ApplicationTitle>
-  </PropertyGroup>
+	<PropertyGroup
+		Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-windows10.0.19041.0|AnyCPU'">
+		<ApplicationTitle>LockPDFy - swiftly encrypts and decrypts PDF files</ApplicationTitle>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-ios|AnyCPU'">
-	<ApplicationTitle>LockPDFy</ApplicationTitle>
-  </PropertyGroup>
+	<PropertyGroup
+		Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android|AnyCPU'">
+		<ApplicationTitle>LockPDFy</ApplicationTitle>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-maccatalyst|AnyCPU'">
-	<ApplicationTitle>LockPDFy - swiftly encrypts and decrypts PDF files</ApplicationTitle>
-  </PropertyGroup>
+	<PropertyGroup
+		Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-ios|AnyCPU'">
+		<ApplicationTitle>LockPDFy</ApplicationTitle>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-windows10.0.19041.0|AnyCPU'">
-	<ApplicationTitle>LockPDFy - swiftly encrypts and decrypts PDF files</ApplicationTitle>
-  </PropertyGroup>
+	<PropertyGroup
+		Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-maccatalyst|AnyCPU'">
+		<ApplicationTitle>LockPDFy - swiftly encrypts and decrypts PDF files</ApplicationTitle>
+	</PropertyGroup>
 
-  <ItemGroup>
-	<!-- App Icon -->
-	<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
+	<PropertyGroup
+		Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-windows10.0.19041.0|AnyCPU'">
+		<ApplicationTitle>LockPDFy - swiftly encrypts and decrypts PDF files</ApplicationTitle>
+	</PropertyGroup>
 
-	<!-- Splash Screen -->
-	<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
+	<ItemGroup>
+		<!-- App Icon -->
+		<MauiIcon Include="Resources\AppIcon\appicon.svg"
+			ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
 
-	<!-- Images -->
-	<MauiImage Include="Resources\Images\*" />
-	<MauiImage Update="Resources\Images\dotnet_bot.png" Resize="True" BaseSize="300,185" />
+		<!-- Splash Screen -->
+		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
 
-	<!-- Custom Fonts -->
-	<MauiFont Include="Resources\Fonts\*" />
+		<!-- Images -->
+		<MauiImage Include="Resources\Images\*" />
+		<MauiImage Update="Resources\Images\dotnet_bot.png" Resize="True" BaseSize="300,185" />
 
-	<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
-	<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
-  </ItemGroup>
+		<!-- Custom Fonts -->
+		<MauiFont Include="Resources\Fonts\*" />
 
-  <ItemGroup>
-	<None Include="..\Logo\Logo-NoBorder.png">
-	  <Pack>True</Pack>
-	  <PackagePath>\</PackagePath>
-	</None>
-  </ItemGroup>
+		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
+		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+	</ItemGroup>
 
-  <ItemGroup>
-	<PackageReference Include="CommunityToolkit.Maui" Version="7.0.0" />
-	<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
-	<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
-	<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Include="..\Logo\Logo-NoBorder.png">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
 
-  <ItemGroup>
-	<ProjectReference Include="..\LockPDFy\LockPDFy.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="CommunityToolkit.Maui" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
+		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-	<Compile Update="SettingsPage.xaml.cs">
-	  <DependentUpon>SettingsPage.xaml</DependentUpon>
-	</Compile>
-	<Compile Update="EncryptPage.xaml.cs">
-	  <DependentUpon>EncryptPage.xaml</DependentUpon>
-	</Compile>
-	<Compile Update="DecryptPage.xaml.cs">
-	  <DependentUpon>DecryptPage.xaml</DependentUpon>
-	</Compile>
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\LockPDFy\LockPDFy.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-	<MauiXaml Update="SettingsPage.xaml">
-	  <Generator>MSBuild:Compile</Generator>
-	</MauiXaml>
-	<MauiXaml Update="EncryptPage.xaml">
-	  <Generator>MSBuild:Compile</Generator>
-	</MauiXaml>
-	<MauiXaml Update="DecryptPage.xaml">
-	  <Generator>MSBuild:Compile</Generator>
-	</MauiXaml>
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Update="SettingsPage.xaml.cs">
+			<DependentUpon>SettingsPage.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="EncryptPage.xaml.cs">
+			<DependentUpon>EncryptPage.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="DecryptPage.xaml.cs">
+			<DependentUpon>DecryptPage.xaml</DependentUpon>
+		</Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+		<MauiXaml Update="SettingsPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="EncryptPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="DecryptPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+	</ItemGroup>
+
+	<PropertyGroup Condition="'$(OS)' == 'Windows_NT' AND '$(AndroidSdkDirectory)' == ''">
+		<!--That PropertyGroup fixes the error below:
+		Xamarin.Android.Tooling.targets(70,5): error XA5300:
+		The Android SDK directory could not be found. Install the Android SDK by following the instructions at: https://aka.ms/dotnet-android-install-sdk To use a custom SDK path for a command line build, set the 'AndroidSdkDirectory' MSBuild property to the custom path.-->
+		<AndroidSdkDirectory>$(LOCALAPPDATA)\Android\Sdk</AndroidSdkDirectory>
+		<!--<Message Text="AndroidSdkDirectory is set to $(AndroidSdkDirectory)" Importance="high" />-->
+	</PropertyGroup>
 
 </Project>
