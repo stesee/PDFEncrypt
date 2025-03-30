@@ -54,6 +54,7 @@ jobs:
       - name: Build maui android
         env:
           ANDROID_SIGN_KEY: ${{ secrets.ANDROID_SIGN_KEY }}
+        if:  env.ANDROID_SIGN_KEY != ''
         run: dotnet publish LockPDFyMaui -f net8.0-android -c Release -p:Version=${{ env.CURRENT_VERSION }} -p:ApplicationId=$PACKAGENAME -p:AndroidKeyStore=true -p:AndroidSigningKeyStore=$PWD/myapp.keystore -p:AndroidSigningKeyAlias=myapp -p:AndroidSigningKeyPass=${{ secrets.ANDROID_SIGN_KEY }} -p:AndroidSigningStorePass=${{ secrets.ANDROID_SIGN_KEY }}
       - name: Github release
         shell: bash
