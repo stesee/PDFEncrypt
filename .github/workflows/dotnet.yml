@@ -1,7 +1,6 @@
 name: .NET build and test
 env:
-  CURRENT_VERSION: 2.4.${{ github.run_number }}
-  APPLICATION_VERSION: ${{ github.run_number }}
+  CURRENT_VERSION: 3.0.${{ github.run_number }}
   LAST_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
   PACKAGENAME: "com.codeuctivity.LockPDFy"
   DOTNET_NOLOGO: true                     # Disable the .NET logo
@@ -47,25 +46,15 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
       - name: Build
-        run: dotnet build .\LockPDFyGithubActionsFriendly.slnf --no-restore --configuration Release
+        run: dotnet build .\LockPDFyGithubActionsFriendly.slnf --no-restore --configuration Release -p:Version=$CURRENT_VERSION
       - name: Build maui windows
-        run: dotnet build .\LockPDFyMaui --configuration Release -f net8.0-windows10.0.19041.0
+        run: dotnet build .\LockPDFyMaui --configuration Release -f net8.0-windows10.0.19041.0 -p:Version=$CURRENT_VERSION
       - name: Test
         run: dotnet test .\LockPDFyGithubActionsFriendly.slnf --no-restore --no-build --verbosity normal --configuration Release
       - name: Build maui android
-        run: dotnet publish LockPDFyMaui -f net8.0-android -c Release -p:ApplicationVersion=$APPLICATION_VERSION -p:ApplicationDisplayVersion=$CURRENT_VERSION -p:ApplicationId=$PACKAGENAME
-      - name: Create signing pfx file from secrets
-        shell: pwsh
-        id: secret-file
         env:
-          SIGN_CERT: ${{ secrets.SIGN_CERT }}
-          ANDROID_SIGN_CERT_PASSWORD: ${{ secrets.ANDROID_SIGN_CERT_PASSWORD }}
-        if:  env.SIGN_CERT != ''
-        run: |
-          $secretFile = "AndroidSignCert.pfx"; 
-          [System.IO.File]::WriteAllBytes($secretFile,[System.Convert]::FromBase64String($env:SIGN_CERT))
-          Write-Output "::set-output name=SECRET_FILE::$secretFile";
-          # jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore $secretFile .\LockPDFyMaui\bin\Release\net8.0-android\publish\$PACKAGENAME.aab AndroidApps -storepass ${{secrets.ANDROID_SIGN_CERT_PASSWORD}}
+          ANDROID_SIGN_KEY: ${{ secrets.ANDROID_SIGN_KEY }}
+        run: dotnet publish LockPDFyMaui -f net8.0-android -c Release -p:Version=$CURRENT_VERSION -p:ApplicationId=$PACKAGENAME -p:AndroidKeyStore=true -p:AndroidSigningKeyStore=$PWD/myapp.keystore -p:AndroidSigningKeyAlias=myapp -p:AndroidSigningKeyPass=${{ secrets.ANDROID_SIGN_KEY }} -p:AndroidSigningStorePass=${{ secrets.ANDROID_SIGN_KEY }}
       - name: Github release
         shell: bash
         env:
