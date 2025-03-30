@@ -46,15 +46,15 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
       - name: Build
-        run: dotnet build .\LockPDFyGithubActionsFriendly.slnf --no-restore --configuration Release -p:Version=$CURRENT_VERSION
+        run: dotnet build .\LockPDFyGithubActionsFriendly.slnf --no-restore --configuration Release -p:Version=${{ env.CURRENT_VERSION }}
       - name: Build maui windows
-        run: dotnet build .\LockPDFyMaui --configuration Release -f net8.0-windows10.0.19041.0 -p:Version=$CURRENT_VERSION
+        run: dotnet build .\LockPDFyMaui --configuration Release -f net8.0-windows10.0.19041.0 -p:Version=${{ env.CURRENT_VERSION }}
       - name: Test
         run: dotnet test .\LockPDFyGithubActionsFriendly.slnf --no-restore --no-build --verbosity normal --configuration Release
       - name: Build maui android
         env:
           ANDROID_SIGN_KEY: ${{ secrets.ANDROID_SIGN_KEY }}
-        run: dotnet publish LockPDFyMaui -f net8.0-android -c Release -p:Version=$CURRENT_VERSION -p:ApplicationId=$PACKAGENAME -p:AndroidKeyStore=true -p:AndroidSigningKeyStore=$PWD/myapp.keystore -p:AndroidSigningKeyAlias=myapp -p:AndroidSigningKeyPass=${{ secrets.ANDROID_SIGN_KEY }} -p:AndroidSigningStorePass=${{ secrets.ANDROID_SIGN_KEY }}
+        run: dotnet publish LockPDFyMaui -f net8.0-android -c Release -p:Version=${{ env.CURRENT_VERSION }} -p:ApplicationId=$PACKAGENAME -p:AndroidKeyStore=true -p:AndroidSigningKeyStore=$PWD/myapp.keystore -p:AndroidSigningKeyAlias=myapp -p:AndroidSigningKeyPass=${{ secrets.ANDROID_SIGN_KEY }} -p:AndroidSigningStorePass=${{ secrets.ANDROID_SIGN_KEY }}
       - name: Github release
         shell: bash
         env:
