@@ -32,7 +32,7 @@ jobs:
       matrix:
         os: [windows-latest]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
@@ -62,11 +62,11 @@ jobs:
           GITHUB_TOKEN: ${{ github.TOKEN }}
         if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/heads/release') && env.GITHUB_TOKEN != '' }}
         run: |
-            gh release create ${{env.CURRENT_VERSION}} ./LockPDFyMaui/bin/Release/net8.0-android/publish/*.aab ./LockPDFyMaui/bin/Release/net8.0-android/publish/*.apk --generate-notes
+            gh release create ${{env.CURRENT_VERSION}} ./LockPDFyMaui/bin/Release/net8.0-android/publish/*.apk --generate-notes
       - name: Github prerelease
         shell: bash
         env:
           GITHUB_TOKEN: ${{ github.TOKEN }}
         if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/heads/release') == false && env.GITHUB_TOKEN != '' }}
         run: |
-            gh release create ${{env.CURRENT_VERSION}} ./LockPDFyMaui/bin/Release/net8.0-android/publish/*.aab ./LockPDFyMaui/bin/Release/net8.0-android/publish/*.apk --prerelease --generate-notes
+            gh release create ${{env.CURRENT_VERSION}} ./LockPDFyMaui/bin/Release/net8.0-android/publish/*.apk --prerelease --generate-notes
