@@ -15,7 +15,6 @@ on:
       - '**/*.md'
       - '**/*.gitignore'
       - '**/*.gitattributes'
-  pull_request:
   workflow_dispatch:
 permissions:
   contents: write
@@ -32,41 +31,39 @@ jobs:
       matrix:
         os: [windows-latest]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
-          dotnet-version: 8.0.x
+          dotnet-version: 10.0.x
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v2
-      - name: Install MAUI Workloads
-        run: |
-          dotnet workload install android --ignore-failed-sources
-          dotnet workload install maui --ignore-failed-sources
+      - name: Restore MAUI workloads
+        run: dotnet workload restore
       - name: Restore dependencies
         run: dotnet restore
       - name: Build
         run: dotnet build .\LockPDFyGithubActionsFriendly.slnf --no-restore --configuration Release -p:Version=${{ env.CURRENT_VERSION }}
       - name: Build maui windows
-        run: dotnet build .\LockPDFyMaui --configuration Release -f net8.0-windows10.0.19041.0 -p:Version=${{ env.CURRENT_VERSION }}
+        run: dotnet build .\LockPDFyMaui --configuration Release -f net10.0-windows10.0.19041.0 -p:Version=${{ env.CURRENT_VERSION }}
       - name: Test
         run: dotnet test .\LockPDFyGithubActionsFriendly.slnf --no-restore --no-build --verbosity normal --configuration Release
       - name: Build maui android
         env:
           ANDROID_SIGN_KEY: ${{ secrets.ANDROID_SIGN_KEY }}
         if:  env.ANDROID_SIGN_KEY != ''
-        run: dotnet publish LockPDFyMaui -f net8.0-android -c Release -p:Version=${{ env.CURRENT_VERSION }} -p:ApplicationId=$PACKAGENAME -p:AndroidKeyStore=true -p:AndroidSigningKeyStore=$PWD/myapp.keystore -p:AndroidSigningKeyAlias=myapp -p:AndroidSigningKeyPass=${{ secrets.ANDROID_SIGN_KEY }} -p:AndroidSigningStorePass=${{ secrets.ANDROID_SIGN_KEY }}
+        run: dotnet publish LockPDFyMaui -f net10.0-android -c Release -p:Version=${{ env.CURRENT_VERSION }} -p:ApplicationId=$PACKAGENAME -p:AndroidKeyStore=true -p:AndroidSigningKeyStore=$PWD/myapp.keystore -p:AndroidSigningKeyAlias=myapp -p:AndroidSigningKeyPass=${{ secrets.ANDROID_SIGN_KEY }} -p:AndroidSigningStorePass=${{ secrets.ANDROID_SIGN_KEY }}
       - name: Github release
         shell: bash
         env:
           GITHUB_TOKEN: ${{ github.TOKEN }}
         if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/heads/release') && env.GITHUB_TOKEN != '' }}
         run: |
-            gh release create ${{env.CURRENT_VERSION}} ./LockPDFyMaui/bin/Release/net8.0-android/publish/*.aab ./LockPDFyMaui/bin/Release/net8.0-android/publish/*.apk --generate-notes
+            gh release create ${{env.CURRENT_VERSION}} ./LockPDFyMaui/bin/Release/net10.0-android/publish/*.apk --generate-notes
       - name: Github prerelease
         shell: bash
         env:
           GITHUB_TOKEN: ${{ github.TOKEN }}
         if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/heads/release') == false && env.GITHUB_TOKEN != '' }}
         run: |
-            gh release create ${{env.CURRENT_VERSION}} ./LockPDFyMaui/bin/Release/net8.0-android/publish/*.aab ./LockPDFyMaui/bin/Release/net8.0-android/publish/*.apk --prerelease --generate-notes
+            gh release create ${{env.CURRENT_VERSION}} ./LockPDFyMaui/bin/Release/net10.0-android/publish/*.apk --prerelease --generate-notes

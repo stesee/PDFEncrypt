@@ -1,13 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net8.0-android;net8.0-ios;net8.0-maccatalyst</TargetFrameworks>
+		<TargetFrameworks>net10.0-android</TargetFrameworks>
 		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">
-			$(TargetFrameworks);net8.0-windows10.0.19041.0
+			$(TargetFrameworks);net10.0-windows10.0.19041.0
 		</TargetFrameworks>
 		<!-- Uncomment to also build the tizen app. You will need to install tizen by following
 		this: https://github.com/Samsung/Tizen.NET -->
-		<!-- <TargetFrameworks>$(TargetFrameworks);net8.0-tizen</TargetFrameworks> -->
+		<!-- <TargetFrameworks>$(TargetFrameworks);net10.0-tizen</TargetFrameworks> -->
 
 		<!-- Note for MacCatalyst:
 		The default runtime is maccatalyst-x64, except in Release config, in which case the default is
@@ -68,42 +68,42 @@
 	</PropertyGroup>
 
 	<PropertyGroup
-		Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-android|AnyCPU'">
+		Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0-android|AnyCPU'">
 		<ApplicationTitle>LockPDFy</ApplicationTitle>
 	</PropertyGroup>
 
 	<PropertyGroup
-		Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-ios|AnyCPU'">
+		Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0-ios|AnyCPU'">
 		<ApplicationTitle>LockPDFy</ApplicationTitle>
 	</PropertyGroup>
 
 	<PropertyGroup
-		Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-maccatalyst|AnyCPU'">
+		Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0-maccatalyst|AnyCPU'">
 		<ApplicationTitle>LockPDFy - swiftly encrypts and decrypts PDF files</ApplicationTitle>
 	</PropertyGroup>
 
 	<PropertyGroup
-		Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-windows10.0.19041.0|AnyCPU'">
+		Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0-windows10.0.19041.0|AnyCPU'">
 		<ApplicationTitle>LockPDFy - swiftly encrypts and decrypts PDF files</ApplicationTitle>
 	</PropertyGroup>
 
 	<PropertyGroup
-		Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android|AnyCPU'">
+		Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0-android|AnyCPU'">
 		<ApplicationTitle>LockPDFy</ApplicationTitle>
 	</PropertyGroup>
 
 	<PropertyGroup
-		Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-ios|AnyCPU'">
+		Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0-ios|AnyCPU'">
 		<ApplicationTitle>LockPDFy</ApplicationTitle>
 	</PropertyGroup>
 
 	<PropertyGroup
-		Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-maccatalyst|AnyCPU'">
+		Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0-maccatalyst|AnyCPU'">
 		<ApplicationTitle>LockPDFy - swiftly encrypts and decrypts PDF files</ApplicationTitle>
 	</PropertyGroup>
 
 	<PropertyGroup
-		Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-windows10.0.19041.0|AnyCPU'">
+		Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0-windows10.0.19041.0|AnyCPU'">
 		<ApplicationTitle>LockPDFy - swiftly encrypts and decrypts PDF files</ApplicationTitle>
 	</PropertyGroup>
 
@@ -167,13 +167,4 @@
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 	</ItemGroup>
-
-	<PropertyGroup Condition="'$(OS)' == 'Windows_NT' AND '$(AndroidSdkDirectory)' == ''">
-		<!--That PropertyGroup fixes the error below:
-		Xamarin.Android.Tooling.targets(70,5): error XA5300:
-		The Android SDK directory could not be found. Install the Android SDK by following the instructions at: https://aka.ms/dotnet-android-install-sdk To use a custom SDK path for a command line build, set the 'AndroidSdkDirectory' MSBuild property to the custom path.-->
-		<AndroidSdkDirectory>$(LOCALAPPDATA)\Android\Sdk</AndroidSdkDirectory>
-		<!--<Message Text="AndroidSdkDirectory is set to $(AndroidSdkDirectory)" Importance="high" />-->
-	</PropertyGroup>
-
 </Project>
