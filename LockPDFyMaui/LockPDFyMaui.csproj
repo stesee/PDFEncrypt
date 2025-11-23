@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net10.0-android;net10.0-ios;net10.0-maccatalyst</TargetFrameworks>
+		<TargetFrameworks>net10.0-android</TargetFrameworks>
 		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">
 			$(TargetFrameworks);net10.0-windows10.0.19041.0
 		</TargetFrameworks>
@@ -167,13 +167,4 @@
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 	</ItemGroup>
-
-	<PropertyGroup Condition="'$(OS)' == 'Windows_NT' AND '$(AndroidSdkDirectory)' == ''">
-		<!--That PropertyGroup fixes the error below:
-		Xamarin.Android.Tooling.targets(70,5): error XA5300:
-		The Android SDK directory could not be found. Install the Android SDK by following the instructions at: https://aka.ms/dotnet-android-install-sdk To use a custom SDK path for a command line build, set the 'AndroidSdkDirectory' MSBuild property to the custom path.-->
-		<AndroidSdkDirectory>$(LOCALAPPDATA)\Android\Sdk</AndroidSdkDirectory>
-		<!--<Message Text="AndroidSdkDirectory is set to $(AndroidSdkDirectory)" Importance="high" />-->
-	</PropertyGroup>
-
 </Project>
