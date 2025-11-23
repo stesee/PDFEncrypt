@@ -1,6 +1,6 @@
 name: .NET build and test
 env:
-  CURRENT_VERSION: 3.0.${{ github.run_number }}
+  CURRENT_VERSION: 3.0.${{ github.run_number}}
   LAST_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
   PACKAGENAME: "com.codeuctivity.LockPDFy"
   DOTNET_NOLOGO: true                     # Disable the .NET logo
@@ -42,28 +42,35 @@ jobs:
         run: dotnet workload restore
       - name: Restore dependencies
         run: dotnet restore
-      - name: Build
+      - name: Build solution
         run: dotnet build .\LockPDFyGithubActionsFriendly.slnf --no-restore --configuration Release -p:Version=${{ env.CURRENT_VERSION }}
       - name: Build maui windows
         run: dotnet build .\LockPDFyMaui --configuration Release -f net10.0-windows10.0.19041.0 -p:Version=${{ env.CURRENT_VERSION }}
       - name: Test
         run: dotnet test .\LockPDFyGithubActionsFriendly.slnf --no-restore --no-build --verbosity normal --configuration Release
+
+      # Build and publish MSIX package for LockpdfyMsix
+      - name: Publish LockpdfyMsix (MSIX)
+        run: dotnet publish .\LockpdfyMsix -c Release -f net10.0-windows10.0.19041.0 -p:Version=${{ env.CURRENT_VERSION }}
+
       - name: Build maui android
         env:
           ANDROID_SIGN_KEY: ${{ secrets.ANDROID_SIGN_KEY }}
         if:  env.ANDROID_SIGN_KEY != ''
         run: dotnet publish LockPDFyMaui -f net10.0-android -c Release -p:Version=${{ env.CURRENT_VERSION }} -p:ApplicationId=$PACKAGENAME -p:AndroidKeyStore=true -p:AndroidSigningKeyStore=$PWD/myapp.keystore -p:AndroidSigningKeyAlias=myapp -p:AndroidSigningKeyPass=${{ secrets.ANDROID_SIGN_KEY }} -p:AndroidSigningStorePass=${{ secrets.ANDROID_SIGN_KEY }}
+
       - name: Github release
         shell: bash
         env:
           GITHUB_TOKEN: ${{ github.TOKEN }}
         if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/heads/release') && env.GITHUB_TOKEN != '' }}
         run: |
-            gh release create ${{env.CURRENT_VERSION}} ./LockPDFyMaui/bin/Release/net10.0-android/publish/*.apk --generate-notes
+          gh release create ${{env.CURRENT_VERSION}} ./LockPDFyMaui/bin/Release/net10.0-android/publish/*.apk ./LockpdfyMsix/bin/Release/net10.0-windows10.0.19041.0/publish/*.{msix,msixbundle,appx,zip} --generate-notes
+
       - name: Github prerelease
         shell: bash
         env:
           GITHUB_TOKEN: ${{ github.TOKEN }}
         if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/heads/release') == false && env.GITHUB_TOKEN != '' }}
         run: |
-            gh release create ${{env.CURRENT_VERSION}} ./LockPDFyMaui/bin/Release/net10.0-android/publish/*.apk --prerelease --generate-notes
+          gh release create ${{env.CURRENT_VERSION}} ./LockPDFyMaui/bin/Release/net10.0-android/publish/*.apk ./LockpdfyMsix/bin/Release/net10.0-windows10.0.19041.0/publish/*.{msix,msixbundle,appx,zip} --prerelease --generate-notes
