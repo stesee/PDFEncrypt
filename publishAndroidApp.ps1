@@ -25,5 +25,5 @@ dotnet clean
 dotnet restore
 dotnet build -c Release
 dotnet test -c Release --no-build
-dotnet publish LockPDFyMaui -f net8.0-android -c Release -p:Version=$Version -p:ApplicationId=$packageName -p:AndroidKeyStore=true -p:AndroidSigningKeyStore=$PWD/myapp.keystore -p:AndroidSigningKeyAlias=myapp -p:AndroidSigningKeyPass=$AndroidSigningPassword -p:AndroidSigningStorePass=$AndroidSigningPassword
-explorer .\LockPDFyMaui\bin\Release\net8.0-android\publish\
+dotnet publish LockPDFyMaui -f net10.0-android -c Release -p:Version=$Version -p:ApplicationId=$packageName -p:AndroidKeyStore=true -p:AndroidSigningKeyStore=$PWD/myapp.keystore -p:AndroidSigningKeyAlias=myapp -p:AndroidSigningKeyPass=$AndroidSigningPassword -p:AndroidSigningStorePass=$AndroidSigningPassword
+explorer .\LockPDFyMaui\bin\Release\net10.0-android\publish\
