@@ -60,10 +60,4 @@ jobs:
         if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/heads/release') && env.GITHUB_TOKEN != '' }}
         run: |
             gh release create ${{env.CURRENT_VERSION}} ./LockPDFyMaui/bin/Release/net10.0-android/publish/*.apk --generate-notes
-      - name: Github prerelease
-        shell: bash
-        env:
-          GITHUB_TOKEN: ${{ github.TOKEN }}
-        if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/heads/release') == false && env.GITHUB_TOKEN != '' }}
-        run: |
-            gh release create ${{env.CURRENT_VERSION}} ./LockPDFyMaui/bin/Release/net10.0-android/publish/*.apk --prerelease --generate-notes
+
