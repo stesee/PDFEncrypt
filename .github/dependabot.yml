@@ -22,6 +22,10 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    groups:
+      itext:
+        patterns:
+          - "itext*"
     ignore:
       - dependency-name: "nunit"
       - dependency-name: "coverlet.collector"
